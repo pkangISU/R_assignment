@@ -50,7 +50,7 @@ nrow(maize)
 
 ncol(teosinte)
 nrow(teosinte)
-
+#transpose maize and teosinte files by turning columns to rows
 maize_t <- t(maize)
 ncol(maize_t)
 nrow(maize_t)
@@ -60,6 +60,12 @@ ncol(teosinte_t)
 nrow(teosinte_t)
 
 head(maize_t)
+
+# pull out three columns from snp files
+snp_3 <- select(snp, SNP_ID, Chromosome, Position)
+ncol(snp_3)
+nrow(snp_3)
+
 
 ```
 
