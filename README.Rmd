@@ -110,9 +110,29 @@ maize_chr10 <- filter(maize_all,Chromosome == "10")
 
 
 #join teosinte and snp
+View(teosinte_t)
+teosinte_t <- as.data.frame(teosinte_t)
+colnames(teosinte_t) <- c (1:975)
+teosinte_t <- cbind(SNP_ID =rownames(teosinte_t),teosinte_t)
 
-teosinte_all <- merge (snp_3,teosinte_t)
+teosinte_all <- merge (snp_3,teosinte_t,by = "SNP_ID")
 ncol(teosinte_all)
+nrow(teosinte_all)
+View(teosinte_all)
+
+teosinte_chr1 <- filter(teosinte_all,Chromosome == "1")
+nrow(teosinte_chr1)
+teosinte_chr2 <- filter(teosinte_all,Chromosome == "2")
+teosinte_chr3 <- filter(teosinte_all,Chromosome == "3")
+teosinte_chr4 <- filter(teosinte_all,Chromosome == "4")
+teosinte_chr5 <- filter(teosinte_all,Chromosome == "5")
+teosinte_chr6 <- filter(teosinte_all,Chromosome == "6")
+teosinte_chr7 <- filter(teosinte_all,Chromosome == "7")
+teosinte_chr8 <- filter(teosinte_all,Chromosome == "8")
+teosinte_chr9 <- filter(teosinte_all,Chromosome == "9")
+teosinte_chr10 <- filter(teosinte_all,Chromosome == "10")
+
+
 ```
 
 ## R Markdown
