@@ -86,7 +86,7 @@ View(snp_3)
 
 #rename column 0 of maize_t as SNP_ID
 maize_t <- cbind(SNP_ID =rownames(maize_t),maize_t)
-colnames(maize_t) <- c("SNP_ID",1:1571)
+colnames(maize_t) <- c("SNP_ID",1:1573)
 
 #join maize and snp
 
@@ -95,6 +95,18 @@ ncol(maize_all)
 nrow(maize_all)
 head(maize_all)
 
+#pull out each chromosome
+maize_chr1 <- filter(maize_all,Chromosome == "1")
+nrow(maize_chr1)
+maize_chr2 <- filter(maize_all,Chromosome == "2")
+maize_chr3 <- filter(maize_all,Chromosome == "3")
+maize_chr4 <- filter(maize_all,Chromosome == "4")
+maize_chr5 <- filter(maize_all,Chromosome == "5")
+maize_chr6 <- filter(maize_all,Chromosome == "6")
+maize_chr7 <- filter(maize_all,Chromosome == "7")
+maize_chr8 <- filter(maize_all,Chromosome == "8")
+maize_chr9 <- filter(maize_all,Chromosome == "9")
+maize_chr10 <- filter(maize_all,Chromosome == "10")
 
 
 #join teosinte and snp
