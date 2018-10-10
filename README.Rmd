@@ -41,8 +41,8 @@ tail(fang)
 tail(snp)
 
 # pull out maize and teosinte files from fang
-maize <- filter(fang, Group %in% )
-
+maize <- filter(fang, Group %in% c("ZMMIL","ZMMLR","ZMMMR"))
+teosinte <- filter(fang, Group %in% c("ZMPBA","ZMPIL","ZMPJA"))
 
 ```
 
