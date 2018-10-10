@@ -66,6 +66,11 @@ snp_3 <- select(snp, SNP_ID, Chromosome, Position)
 ncol(snp_3)
 nrow(snp_3)
 
+maize_t_983 <- read_table(maize_t,skip = 3)
+#join maize and snp
+colnames(maize_t,c(SNP1:SNP1573))
+
+#join teosinte and snp
 
 ```
 
