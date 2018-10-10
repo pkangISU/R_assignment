@@ -72,14 +72,23 @@ is.list(maize_t)
 is.vector(maize_t)
 is.data.frame(maize_t)
 
-maize_t_983 <- read.csv(maize_t,skip = 3,col_names = c(SNP_ID, SNP1, SNP2, SNP3...))
+#make sure that we have enough memory to run function merge
+Sys.setenv('R_MAX_VSIZE'=100000000000)
+
+maize_t_983 <- read.csv(maize_t,skip = 3)
+
 #join maize and snp
 
-colnames(maize_t) <- c("SNP_ID","SNP1", "SNP2", "SNP3")
-head(maize_t)
+maize_all <- merge(snp_3,maize_t)
+ncol(maize_all)
+nrow(maize_all)
+
+
 
 #join teosinte and snp
 
+teosinte_all <- merge (snp_3,teosinte_t)
+ncol(teosinte_all)
 ```
 
 ## R Markdown
