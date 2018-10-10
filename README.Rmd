@@ -13,13 +13,16 @@ if (!require("tidyverse")) install.packages("tidyverse")
 library(tidyverse)
 if (!require("ggplot2")) install.packages("ggplot2")
 library(ggplot2)
-
+remove.packages("readr", lib="~/R/x86_64-pc-linux-gnu-library/3.5")
+install.packages("readr")
+remove.packages("tidyverse", lib="~/R/x86_64-pc-linux-gnu-library/3.5")
+install.packages("tidyverse")
+library("tidyverse")
 # Import the files fang_et_al_genotypes.txt and snp_position.txt from class repository on github
 
-fang <- read_csv("https://raw.githubusercontent.com/EEOB-BioData/BCB546X-Fall2018/master/assignments/UNIX_Assignment/fang_et_al_genotypes.txt")
+fang <- read_tsv("https://raw.githubusercontent.com/pkangISU/R_assignment/master/fang_et_al_genotypes.txt")
 
-
-snp <- read_csv("https://github.com/EEOB-BioData/BCB546X-Fall2018/blob/master/assignments/UNIX_Assignment/snp_position.txt")
+snp <- read_tsv("https://raw.githubusercontent.com/pkangISU/R_assignment/master/snp_position.txt")
 
 #check the number of columns in fang and snp
 ncol(fang)
@@ -28,6 +31,17 @@ ncol(snp)
 #check the number of rows in fang and snp
 nrow(fang)
 nrow(snp)
+
+#check the first six rows of fang and snp
+head(fang)
+head(snp)
+
+#check the last six rows of fang and snp
+tail(fang)
+tail(snp)
+
+# pull out maize and teosinte files from fang
+maize <- filter(fang, Group %in% )
 
 
 ```
