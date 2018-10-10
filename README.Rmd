@@ -66,9 +66,17 @@ snp_3 <- select(snp, SNP_ID, Chromosome, Position)
 ncol(snp_3)
 nrow(snp_3)
 
-maize_t_983 <- read_table(maize_t,skip = 3)
+str(maize_t)
+attributes(maize_t)
+is.list(maize_t)
+is.vector(maize_t)
+is.data.frame(maize_t)
+
+maize_t_983 <- read.csv(maize_t,skip = 3,col_names = c(SNP_ID, SNP1, SNP2, SNP3...))
 #join maize and snp
-colnames(maize_t,c(SNP1:SNP1573))
+
+colnames(maize_t) <- c("SNP_ID","SNP1", "SNP2", "SNP3")
+head(maize_t)
 
 #join teosinte and snp
 
