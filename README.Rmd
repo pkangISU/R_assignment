@@ -75,13 +75,25 @@ is.data.frame(maize_t)
 #make sure that we have enough memory to run function merge
 Sys.setenv('R_MAX_VSIZE'=100000000000)
 
-maize_t_983 <- read.csv(maize_t,skip = 3)
+
+#switch maize_t and snp_3 to data frame
+maize_t <- as.data.frame(maize_t)
+snp_3 <- as.data.frame(snp_3)
+
+#view the maize_t and snp_3 files in table
+View(maize_t)
+View(snp_3)
+
+#rename column 0 of maize_t as SNP_ID
+maize_t <- cbind(SNP_ID =rownames(maize_t),maize_t)
+colnames(maize_t) <- c("SNP_ID",1:1571)
 
 #join maize and snp
 
-maize_all <- merge(snp_3,maize_t)
+maize_all <- merge.data.frame(snp_3,maize_t,by="SNP_ID")
 ncol(maize_all)
 nrow(maize_all)
+head(maize_all)
 
 
 
