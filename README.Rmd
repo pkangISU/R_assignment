@@ -59,7 +59,8 @@ str(snp)
 
 ## Process files to make 20 files of maize and 20 files of teosinte
 
-## pull out maize and teosinte files from fang
+# pull out maize and teosinte files from fang
+  
 ```{r}
 
 maize <- filter(fang, Group %in% c("ZMMIL","ZMMLR","ZMMMR"))
@@ -71,7 +72,7 @@ nrow(maize)
 ncol(teosinte)
 nrow(teosinte)
 ```
-##transpose maize and teosinte files by turning columns to rows
+#transpose maize and teosinte files by turning columns to rows
 ```{r}
 maize_t <- t(maize)
 ncol(maize_t)
@@ -84,14 +85,14 @@ nrow(teosinte_t)
 head(maize_t)
 head(teosinte_t)
 ```
-##pull out three columns from snp files
+#pull out three columns from snp files
 ```{r}
 snp_3 <- select(snp, SNP_ID, Chromosome, Position)
 ncol(snp_3)
 nrow(snp_3)
 View(snp_3)
 ```
-##Inspect the data set maize_t
+#Inspect the data set maize_t
 ```{r}
 str(maize_t)
 attributes(maize_t)
@@ -99,7 +100,7 @@ is.list(maize_t)
 is.vector(maize_t)
 is.data.frame(maize_t)
 ```
-##Inspect the data set teosinte_t
+#Inspect the data set teosinte_t
 ```{r}
 str(teosinte_t)
 attributes(teosinte_t)
@@ -107,15 +108,11 @@ is.list(teosinte_t)
 is.vector(teosinte_t)
 is.data.frame(teosinte_t)
 ```
-
-##make sure that we have enough memory to run function merge
+#make sure that we have enough memory to run function merge
 ```{r}
 Sys.setenv('R_MAX_VSIZE'=100000000000)
 ```
-
-
-
-##switch maize_t, teosinte_t and snp_3 to data frame type,so that we can use some function
+#switch maize_t, teosinte_t and snp_3 to data frame type,so that we can use some function
 ```{r}
 maize_t <- as.data.frame(maize_t)
 snp_3 <- as.data.frame(snp_3)
@@ -157,7 +154,51 @@ maize_chr8 <- filter(maize_all,Chromosome == "8")
 maize_chr9 <- filter(maize_all,Chromosome == "9")
 maize_chr10 <- filter(maize_all,Chromosome == "10")
 ```
-
+#sort each chromosome file from maize by increasing position with missing value as ?
+```{r}
+library(dplyr)
+maize_chr1 <- arrange(maize_chr1, as.numeric(Position))
+maize_chr2 <-arrange(maize_chr2, as.numeric(Position))
+maize_chr3 <-arrange(maize_chr3, as.numeric(Position))
+maize_chr4 <-arrange(maize_chr4, as.numeric(Position))
+maize_chr5 <-arrange(maize_chr5, as.numeric(Position))
+maize_chr6 <-arrange(maize_chr6, as.numeric(Position))
+maize_chr7 <-arrange(maize_chr7, as.numeric(Position))
+maize_chr8 <-arrange(maize_chr8, as.numeric(Position))
+maize_chr9 <-arrange(maize_chr9, as.numeric(Position))
+maize_chr10 <-arrange(maize_chr10, as.numeric(Position))
+View(maize_chr1)
+```
+#sort each chromosome file from maize in decreasing position,D stands for decreasing
+```{r}
+maize_chr1_D <- arrange(maize_chr1,desc(as.numeric(Position)))
+View(maize_chr1_D) 
+maize_chr2_D <- arrange(maize_chr2,desc(as.numeric(Position)))
+maize_chr3_D <- arrange(maize_chr3,desc(as.numeric(Position)))
+maize_chr4_D <- arrange(maize_chr4,desc(as.numeric(Position)))
+maize_chr5_D <- arrange(maize_chr5,desc(as.numeric(Position)))
+maize_chr6_D <- arrange(maize_chr6,desc(as.numeric(Position)))
+maize_chr7_D <- arrange(maize_chr7,desc(as.numeric(Position)))
+maize_chr8_D <- arrange(maize_chr8,desc(as.numeric(Position)))
+maize_chr9_D <- arrange(maize_chr9,desc(as.numeric(Position)))
+maize_chr10_D <- arrange(maize_chr10,desc(as.numeric(Position)))
+```
+#replace missing value ? with - in maize 
+```{r}
+library(dplyr)
+library(stringr)
+maize_chr1_Q <- str_replace_all(as.matrix(maize_chr1_D),"\\?","-")
+maize_chr1_Q
+maize_chr2_Q <- str_replace_all(as.matrix(maize_chr2_D),"\\?","-")
+maize_chr3_Q <- str_replace_all(as.matrix(maize_chr3_D),"\\?","-")
+maize_chr4_Q <- str_replace_all(as.matrix(maize_chr4_D),"\\?","-")
+maize_chr5_Q <- str_replace_all(as.matrix(maize_chr5_D),"\\?","-")
+maize_chr6_Q <- str_replace_all(as.matrix(maize_chr6_D),"\\?","-")
+maize_chr7_Q <- str_replace_all(as.matrix(maize_chr7_D),"\\?","-")
+maize_chr8_Q <- str_replace_all(as.matrix(maize_chr8_D),"\\?","-")
+maize_chr9_Q <- str_replace_all(as.matrix(maize_chr9_D),"\\?","-")
+maize_chr10_Q <- str_replace_all(as.matrix(maize_chr10_D),"\\?","-")
+```
 
 #join teosinte and snp
 ```{r}
@@ -185,35 +226,51 @@ teosinte_chr8 <- filter(teosinte_all,Chromosome == "8")
 teosinte_chr9 <- filter(teosinte_all,Chromosome == "9")
 teosinte_chr10 <- filter(teosinte_all,Chromosome == "10")
 ```
-#sort each chromosome file from maize by increasing position with missing value as ?
+#sort each chromosome file from teosinte by increasing position with missing value as ?
 ```{r}
 library(dplyr)
-maize_chr1 <- arrange(maize_chr1, as.numeric(Position))
-maize_chr2 <-arrange(maize_chr2, as.numeric(Position))
-maize_chr3 <-arrange(maize_chr3, as.numeric(Position))
-maize_chr4 <-arrange(maize_chr4, as.numeric(Position))
-maize_chr5 <-arrange(maize_chr5, as.numeric(Position))
-maize_chr6 <-arrange(maize_chr6, as.numeric(Position))
-maize_chr7 <-arrange(maize_chr7, as.numeric(Position))
-maize_chr8 <-arrange(maize_chr8, as.numeric(Position))
-maize_chr9 <-arrange(maize_chr9, as.numeric(Position))
-maize_chr10 <-arrange(maize_chr10, as.numeric(Position))
-View(maize_chr1)
+teosinte_chr1 <- arrange(teosinte_chr1, as.numeric(Position))
+teosinte_chr2 <-arrange(teosinte_chr2, as.numeric(Position))
+teosinte_chr3 <-arrange(teosinte_chr3, as.numeric(Position))
+teosinte_chr4 <-arrange(teosinte_chr4, as.numeric(Position))
+teosinte_chr5 <-arrange(teosinte_chr5, as.numeric(Position))
+teosinte_chr6 <-arrange(teosinte_chr6, as.numeric(Position))
+teosinte_chr7 <-arrange(teosinte_chr7, as.numeric(Position))
+teosinte_chr8 <-arrange(teosinte_chr8, as.numeric(Position))
+teosinte_chr9 <-arrange(teosinte_chr9, as.numeric(Position))
+teosinte_chr10 <-arrange(teosinte_chr10, as.numeric(Position))
+View(teosinte_chr1)
 ```
-#sort each chromosome file from maize in decreasing position
+#sort each chromosome file from teosinte in decreasing position
 ```{r}
-maize_chr1_D <- arrange(maize_chr1,desc(as.numeric(Position)))
-View(maize_chr1_D)                   
+teosinte_chr1_D <- arrange(teosinte_chr1,desc(as.numeric(Position)))
+View(teosinte_chr1_D) 
+teosinte_chr2_D <- arrange(teosinte_chr2,desc(as.numeric(Position)))
+teosinte_chr3_D <- arrange(teosinte_chr3,desc(as.numeric(Position)))
+teosinte_chr4_D <- arrange(teosinte_chr4,desc(as.numeric(Position)))
+teosinte_chr5_D <- arrange(teosinte_chr5,desc(as.numeric(Position)))
+teosinte_chr6_D <- arrange(teosinte_chr6,desc(as.numeric(Position)))
+teosinte_chr7_D <- arrange(teosinte_chr7,desc(as.numeric(Position)))
+teosinte_chr8_D <- arrange(teosinte_chr8,desc(as.numeric(Position)))
+teosinte_chr9_D <- arrange(teosinte_chr9,desc(as.numeric(Position)))
+teosinte_chr10_D <- arrange(teosinte_chr10,desc(as.numeric(Position)))
 ```
 #replace missing value ? with - in maize 
 ```{r}
 library(dplyr)
 library(stringr)
-maize_chr1_Q <- str_replace_all(as.matrix(maize_chr1_D),"\\?","-")
-maize_chr1_Q
+teosinte_chr1_Q <- str_replace_all(as.matrix(teosinte_chr1_D),"\\?","-")
+teosinte_chr1_Q
+teosinte_chr2_Q <- str_replace_all(as.matrix(teosinte_chr2_D),"\\?","-")
+teosinte_chr3_Q <- str_replace_all(as.matrix(teosinte_chr3_D),"\\?","-")
+teosinte_chr4_Q <- str_replace_all(as.matrix(teosinte_chr4_D),"\\?","-")
+teosinte_chr5_Q <- str_replace_all(as.matrix(teosinte_chr5_D),"\\?","-")
+teosinte_chr6_Q <- str_replace_all(as.matrix(teosinte_chr6_D),"\\?","-")
+teosinte_chr7_Q <- str_replace_all(as.matrix(teosinte_chr7_D),"\\?","-")
+teosinte_chr8_Q <- str_replace_all(as.matrix(teosinte_chr8_D),"\\?","-")
+teosinte_chr9_Q <- str_replace_all(as.matrix(teosinte_chr9_D),"\\?","-")
+teosinte_chr10_Q <- str_replace_all(as.matrix(teosinte_chr10_D),"\\?","-")
 ```
-
-
 
 ```{r}
 
@@ -239,10 +296,13 @@ library(ggplot2)
 maize_g <- maize_all %>% group_by(Chromosome) %>% summarise(total=n())
 View(maize_g)
 ggplot(data=maize_g,mapping=aes(x=Chromosome, y=total,fill = Chromosome)) + geom_bar(width = 1,stat = "identity",position = "stack",show.legend = FALSE) + ggtitle("maize snp distribution across chromosomes")
+ggsave("myplot.pdf")
+
 #teosinte file
 teosinte_g <- teosinte_all %>% group_by(Chromosome) %>% summarise(total=n())
 View(teosinte_g)
 ggplot(data=teosinte_g,mapping=aes(x=Chromosome, y=total,fill = Chromosome)) + geom_bar(width = 1,stat = "identity",position = "stack",show.legend = FALSE) + ggtitle("teosinte snp distribution across chromosomes")
+ggsave("myplot.pdf")
 ```
 ##Missing data and amount of heterzygosity
 ```{r}
