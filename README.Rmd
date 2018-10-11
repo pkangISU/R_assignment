@@ -307,7 +307,7 @@ teosinte_chr9_Q <- str_replace_all(as.matrix(teosinte_chr9_D),"\\?","-")
 teosinte_chr10_Q <- str_replace_all(as.matrix(teosinte_chr10_D),"\\?","-")
 ```
 
-## SNPs per chromosome
+# SNPs per chromosome
 
 ```{r}
 #maize file
@@ -324,8 +324,12 @@ ggplot(data=teosinte_g,mapping=aes(x=Chromosome, y=total,fill = Chromosome)) + g
 ggsave("myplot.pdf")
 
 ```
+#
+```{r}
 
-## Missing data and amount of heterzygosity
+```
+
+# Missing data and amount of heterzygosity and homozygosity
 
 ```{r}
 #create a new data fang_part including Sample_ID, Group and abph1.20
@@ -338,6 +342,7 @@ View(fang_part)
 names(fang_part)
 
 ```
+
 ```{r}
 #create a new column to show homozygotes and heterozygotes with missing value NA
 library(dplyr)
@@ -361,23 +366,29 @@ unique(fang_type)
 distinct(fang_type,Group)
 distinct(fang_type,type)
 
-```
-```{r}
-#plot the proportion of homozygous and heterozygous across the groups as well as missing value
-ggplot(fang_type, mapping = aes(x = Group, y = type)) + geom_point(colour="red")
-
-
+nrow(fang_part)
+nrow(fang_type)
 
 ```
 
-##My own visualization : see snp distribution across the samples
 ```{r}
+#plot the proportion of homozygous and heterozygous across the groups as well as missing value(2nd graph) or excluding missing values(1st graph)
+
+ggplot(data = fang_type) + geom_point(mapping = aes(x=Group, y=Sample_ID, color=type,stat = "identity",position = "identity",na.rm = FALSE, show.legend = NA,
+  inherit.aes = TRUE))
+ggplot(data = fang_part) + geom_point(mapping = aes(x=Group, y=Sample_ID, color=type))
+ggsave("myplot.pdf")
+
+```
+
+##My own visualization : see snp distribution across the samples(2nd) and homozygosity distribution on certain SNP location(1st)
+```{r}
+ggplot(data = fang_part) + geom_bar(mapping = aes(x = type))
+
 ggplot(fang,mapping = aes(x = Sample_ID,y = abph1.20))+geom_point(colour ="blue",size = 3)
 ggsave("myplot.pdf")
 ```
-```{r}
-transmute(fang_part, SNP = abph1.20 == "C/C" & abph1.20 == "G/G")
-```
+
 
 
 ## R Markdown
