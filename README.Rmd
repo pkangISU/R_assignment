@@ -55,6 +55,10 @@ dim(snp)
 #check the structure of both files
 str(fang)
 str(snp)
+
+#check the names of both files
+names(fang)
+names(snp)
 ```
 
 ## Process files to make 20 files of maize and 20 files of teosinte
@@ -306,14 +310,38 @@ ggsave("myplot.pdf")
 ```
 ##Missing data and amount of heterzygosity
 ```{r}
+library(dplyr)
+library(stringr)
+fang_part <- select(fang, Sample_ID, Group,abph1.20)
+nrow(fang_part)
+ncol(fang_part)
+View(fang_part)
+names(fang_part)
 
 
 ```
+```{r}
+library(dplyr)
+library(stringr)
+
+if ("abph1.20" %in% c("C/C","G/G")) {
+  transmute(fang_part,SNP = HOM)
+}else if ("abph1.20" %in% c("C/G","G/C")){transmute(fang_part,SNP = HET)
+}else   {transmute(fang_part,SNP = NA)
+}
+
+names(fang_part)
+
+
+```
+
 ##My own visualization
 ```{r}
 
 ```
-
+```{r}
+transmute(fang_part, SNP = abph1.20 == "C/C" & abph1.20 == "G/G")
+```
 
 
 ## R Markdown
