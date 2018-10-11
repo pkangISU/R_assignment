@@ -276,9 +276,7 @@ teosinte_chr9_Q <- str_replace_all(as.matrix(teosinte_chr9_D),"\\?","-")
 teosinte_chr10_Q <- str_replace_all(as.matrix(teosinte_chr10_D),"\\?","-")
 ```
 
-```{r}
 
-```
 
 ```{r}
                        
@@ -310,6 +308,7 @@ ggsave("myplot.pdf")
 ```
 ##Missing data and amount of heterzygosity
 ```{r}
+#create a new data fang_part including Sample_ID, Group and abph1
 library(dplyr)
 library(stringr)
 fang_part <- select(fang, Sample_ID, Group,abph1.20)
@@ -318,26 +317,34 @@ ncol(fang_part)
 View(fang_part)
 names(fang_part)
 
-
 ```
 ```{r}
+#create a new column to show homozygotes and heterozygotes with missing value NA
 library(dplyr)
 library(stringr)
 
 if ("abph1.20" %in% c("C/C","G/G")) {
   transmute(fang_part,SNP = HOM)
-}else if ("abph1.20" %in% c("C/G","G/C")){transmute(fang_part,SNP = HET)
+}else if ("abph1.20" %in% c("C/G","G/C")){
+  transmute(fang_part,SNP = HET)
 }else   {transmute(fang_part,SNP = NA)
 }
 
-names(fang_part)
+
+
+```
+```{r}
+#plot the proportion of homozygous and heterozygous across the groups as well as missing value
+
+ggplot(fang_part,mapping = aes(x=Group, y = SNP)) +geom_point()
 
 
 ```
 
-##My own visualization
+##My own visualization : see snp distribution across the samples
 ```{r}
-
+ggplot(fang,mapping = aes(x = Sample_ID,y = abph1.20))+geom_point(colour ="blue",size = 3)
+ggsave("myplot.pdf")
 ```
 ```{r}
 transmute(fang_part, SNP = abph1.20 == "C/C" & abph1.20 == "G/G")
