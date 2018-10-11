@@ -47,16 +47,19 @@ head(snp)
 #check the last six rows of fang and snp
 tail(fang)
 tail(snp)
+
 #check both of the row number and column number at the same time
 dim(fang)
 dim(snp)
+
 #check the structure of both files
 str(fang)
 str(snp)
 ```
-### Process files to make 20 files of maize and 20 files of teosinte
-## pull out maize and teosinte files from fang
 
+## Process files to make 20 files of maize and 20 files of teosinte
+
+## pull out maize and teosinte files from fang
 ```{r}
 
 maize <- filter(fang, Group %in% c("ZMMIL","ZMMLR","ZMMMR"))
@@ -197,24 +200,39 @@ maize_chr9 <-arrange(maize_chr9, as.numeric(Position))
 maize_chr10 <-arrange(maize_chr10, as.numeric(Position))
 View(maize_chr1)
 ```
-#sort each chromosome file from maize by decreasing position with missing value as "-"
+#sort each chromosome file from maize in decreasing position
 ```{r}
-gsub("\\?","-",maize_chr1,ignore.case = FALSE, perl = FALSE,
-     fixed = FALSE, useBytes = FALSE)
-?gsub
 maize_chr1_D <- arrange(maize_chr1,desc(as.numeric(Position)))
-maize_chr1_D[?] <- "-"
-gsub("\\?","-",maize_chr1_D$`1`)
-View(maize_chr1_D)
+View(maize_chr1_D)                   
+```
+#replace missing value ? with - in maize 
+```{r}
+library(dplyr)
+library(stringr)
+maize_chr1_Q <- str_replace_all(as.matrix(maize_chr1_D),"\\?","-")
+maize_chr1_Q
+```
+
+
+
+```{r}
+
 ```
 
 ```{r}
-summary(maize_chr1)
-
-stringr fucnction
-summarise function
+                       
 ```
-#SNPs per chromosome
+```{r}
+
+```
+
+
+
+
+```{r}
+
+```
+##SNPs per chromosome
 ```{r}
 #maize file
 library(ggplot2)
