@@ -288,20 +288,6 @@ teosinte_chr10_Q <- str_replace_all(as.matrix(teosinte_chr10_D),"\\?","-")
 ```
 
 
-
-```{r}
-                       
-```
-```{r}
-
-```
-
-
-
-
-```{r}
-
-```
 ##SNPs per chromosome
 ```{r}
 #maize file
