@@ -47,10 +47,17 @@ head(snp)
 #check the last six rows of fang and snp
 tail(fang)
 tail(snp)
+#check both of the row number and column number at the same time
+dim(fang)
+dim(snp)
+#check the structure of both files
+str(fang)
+str(snp)
 ```
 ### Process files to make 20 files of maize and 20 files of teosinte
-```{r}
 ## pull out maize and teosinte files from fang
+
+```{r}
 
 maize <- filter(fang, Group %in% c("ZMMIL","ZMMLR","ZMMMR"))
 teosinte <- filter(fang, Group %in% c("ZMPBA","ZMPIL","ZMPJA"))
@@ -61,8 +68,7 @@ nrow(maize)
 ncol(teosinte)
 nrow(teosinte)
 ```
-
-#transpose maize and teosinte files by turning columns to rows
+##transpose maize and teosinte files by turning columns to rows
 ```{r}
 maize_t <- t(maize)
 ncol(maize_t)
@@ -73,14 +79,16 @@ ncol(teosinte_t)
 nrow(teosinte_t)
 
 head(maize_t)
+head(teosinte_t)
 ```
-# pull out three columns from snp files
+##pull out three columns from snp files
 ```{r}
 snp_3 <- select(snp, SNP_ID, Chromosome, Position)
 ncol(snp_3)
 nrow(snp_3)
+View(snp_3)
 ```
-#Inspect the data set maize_t
+##Inspect the data set maize_t
 ```{r}
 str(maize_t)
 attributes(maize_t)
@@ -88,33 +96,43 @@ is.list(maize_t)
 is.vector(maize_t)
 is.data.frame(maize_t)
 ```
+##Inspect the data set teosinte_t
+```{r}
+str(teosinte_t)
+attributes(teosinte_t)
+is.list(teosinte_t)
+is.vector(teosinte_t)
+is.data.frame(teosinte_t)
+```
 
-#make sure that we have enough memory to run function merge
+##make sure that we have enough memory to run function merge
 ```{r}
 Sys.setenv('R_MAX_VSIZE'=100000000000)
 ```
 
 
 
-#make maize_t and snp_3 to data frame type,so that we can use some function
+##switch maize_t, teosinte_t and snp_3 to data frame type,so that we can use some function
 ```{r}
 maize_t <- as.data.frame(maize_t)
 snp_3 <- as.data.frame(snp_3)
+teosinte_t <- as.data.frame(teosinte_t)
 ```
 
-#view the maize_t and snp_3 files in table
+##view the maize_t,snp_3 and teosinte_t files in table to see if they are ready to be merged
 
 ```{r}
 View(maize_t)
 View(snp_3)
+View(teosinte_t)
 ```
 
-#rename column 0 of maize_t as SNP_ID
+##rename column 0 of maize_t as SNP_ID
 ```{r}
 maize_t <- cbind(SNP_ID =rownames(maize_t),maize_t)
 colnames(maize_t) <- c("SNP_ID",1:1573)
 ```
-#join maize and snp
+##join maize and snp
 ```{r}
 maize_all <- merge.data.frame(snp_3,maize_t,by="SNP_ID")
 ncol(maize_all)
@@ -167,38 +185,58 @@ teosinte_chr10 <- filter(teosinte_all,Chromosome == "10")
 #sort each chromosome file from maize by increasing position with missing value as ?
 ```{r}
 library(dplyr)
+maize_chr1 <- arrange(maize_chr1, as.numeric(Position))
+maize_chr2 <-arrange(maize_chr2, as.numeric(Position))
+maize_chr3 <-arrange(maize_chr3, as.numeric(Position))
+maize_chr4 <-arrange(maize_chr4, as.numeric(Position))
+maize_chr5 <-arrange(maize_chr5, as.numeric(Position))
+maize_chr6 <-arrange(maize_chr6, as.numeric(Position))
+maize_chr7 <-arrange(maize_chr7, as.numeric(Position))
+maize_chr8 <-arrange(maize_chr8, as.numeric(Position))
+maize_chr9 <-arrange(maize_chr9, as.numeric(Position))
+maize_chr10 <-arrange(maize_chr10, as.numeric(Position))
 View(maize_chr1)
-arrange(maize_chr1, as.numeric(Position)) 
 ```
-#sort each chromosome file from maize by decreasing position with missing value as -
+#sort each chromosome file from maize by decreasing position with missing value as "-"
 ```{r}
-arrange(maize_chr1, desc(as.numeric(Position)))
+gsub("\\?","-",maize_chr1,ignore.case = FALSE, perl = FALSE,
+     fixed = FALSE, useBytes = FALSE)
+?gsub
+maize_chr1_D <- arrange(maize_chr1,desc(as.numeric(Position)))
+maize_chr1_D[?] <- "-"
+gsub("\\?","-",maize_chr1_D$`1`)
+View(maize_chr1_D)
 ```
+
 ```{r}
 summary(maize_chr1)
 
 stringr fucnction
 summarise function
 ```
+#SNPs per chromosome
 ```{r}
+#maize file
 library(ggplot2)
-summarise(maize_all,group_by(Chromosome),count = n())
-maize_g <- maize_all %>% group_by(Chromosome) %>% summarise(total_snp=n())
+maize_g <- maize_all %>% group_by(Chromosome) %>% summarise(total=n())
 View(maize_g)
-ggplot(data=maize_g,mapping=aes(x=Chromosome, y=total_snp)) + geom_bar(width = 1,stat = "identity") + ggtitle("maize snp distribution across chromosomes")
+ggplot(data=maize_g,mapping=aes(x=Chromosome, y=total,fill = Chromosome)) + geom_bar(width = 1,stat = "identity",position = "stack",show.legend = FALSE) + ggtitle("maize snp distribution across chromosomes")
+#teosinte file
+teosinte_g <- teosinte_all %>% group_by(Chromosome) %>% summarise(total=n())
+View(teosinte_g)
+ggplot(data=teosinte_g,mapping=aes(x=Chromosome, y=total,fill = Chromosome)) + geom_bar(width = 1,stat = "identity",position = "stack",show.legend = FALSE) + ggtitle("teosinte snp distribution across chromosomes")
 ```
+##Missing data and amount of heterzygosity
+```{r}
 
+
+```
+##My own visualization
 ```{r}
 
 ```
 
-```{r}
 
-```
-
-```{r}
-
-```
 
 ## R Markdown
 
