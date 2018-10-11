@@ -259,7 +259,9 @@ teosinte_chr8_D <- arrange(teosinte_chr8,desc(as.numeric(Position)))
 teosinte_chr9_D <- arrange(teosinte_chr9,desc(as.numeric(Position)))
 teosinte_chr10_D <- arrange(teosinte_chr10,desc(as.numeric(Position)))
 ```
-#replace missing value ? with - in maize 
+
+replace missing value ? with - in maize 
+
 ```{r}
 library(dplyr)
 library(stringr)
@@ -306,7 +308,9 @@ View(teosinte_g)
 ggplot(data=teosinte_g,mapping=aes(x=Chromosome, y=total,fill = Chromosome)) + geom_bar(width = 1,stat = "identity",position = "stack",show.legend = FALSE) + ggtitle("teosinte snp distribution across chromosomes")
 ggsave("myplot.pdf")
 ```
-##Missing data and amount of heterzygosity
+
+## Missing data and amount of heterzygosity
+
 ```{r}
 #create a new data fang_part including Sample_ID, Group and abph1
 library(dplyr)
