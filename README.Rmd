@@ -324,9 +324,23 @@ ggplot(data=teosinte_g,mapping=aes(x=Chromosome, y=total,fill = Chromosome)) + g
 ggsave("myplot.pdf")
 
 ```
-#
+#what group contributes more?
 ```{r}
+#fang file
+library(ggplot2)
+View(fang)
+fang_all <- fang %>% group_by(Group) %>% summarise(total=n())
+View(fang_all)
+ggplot(data=fang_all,mapping=aes(x=Group, y=total)) + geom_bar(width = 1,stat = "identity",position = "dodge",show.legend = FALSE)+ facet_wrap( ~ Group)+
+  theme_classic() + 
+  scale_y_continuous(limit=c(0,1300), expand=c(0,0)) +
+  theme(
+      axis.title.y=element_text(vjust=0.19),
+      axis.title.x=element_text(vjust=0.19),
+      legend.position = "bottom",
+      legend.title=element_blank()) 
 
+ggsave("myplot.pdf")
 ```
 
 # Missing data and amount of heterzygosity and homozygosity
@@ -372,16 +386,28 @@ nrow(fang_type)
 ```
 
 ```{r}
+#You do not have to look at this part, it is the point plot I was playing with:)
 #plot the proportion of homozygous and heterozygous across the groups as well as missing value(2nd graph) or excluding missing values(1st graph)
 
 ggplot(data = fang_type) + geom_point(mapping = aes(x=Group, y=Sample_ID, color=type,stat = "identity",position = "identity",na.rm = FALSE, show.legend = NA,
   inherit.aes = TRUE))
 ggplot(data = fang_part) + geom_point(mapping = aes(x=Group, y=Sample_ID, color=type))
 ggsave("myplot.pdf")
-
+?summarise
+```
+```{r}
+#use geom_bar to address the homzygosity and heterozygosity distribution across the groups,only used the SNP location abph1.20
+fang_g <- fang_part %>% group_by(Group) %>% count(Sample_ID)
+View(fang_g)
+fang_m <- merge(fang_part,fang_g,by = "Sample_ID")
+View(fang_m)
+ggplot(data=fang_m,mapping=aes(x=Group.x, y=n,color=type)) + geom_bar(width = 1,stat = "identity",position = "stack",show.legend = FALSE)
+?geom_bar
+ggsave("myplot.pdf")
 ```
 
-##My own visualization : see snp distribution across the samples(2nd) and homozygosity distribution on certain SNP location(1st)
+# My own visualization : see snp distribution across the samples(2nd) and homozygosity distribution on certain SNP location(1st)
+
 ```{r}
 ggplot(data = fang_part) + geom_bar(mapping = aes(x = type))
 
