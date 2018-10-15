@@ -1,0 +1,107 @@
+---
+title: "Mu_review.Rmd"
+author: "Qi Mu"
+date: "October 14, 2018"
+output: html_document
+---
+
+## Inspection of the files of fang_et_al_genotypes.txt and snp_position.txt
+When the files are too large, especially with lots of columns, it is not a very good idea to run head(), tail(), str(), and names(). The results will be too larges, it is not very informtive to see the data this way. Since we are using `dyplr`, it is ok to just type the name of the file, there will be a tibble showing the first few columns and first few row of the tibble, it also shows the dimention of the table. If you really need to see what are the rest of the column, you can use the colnames(), which will be less messy.
+
+There is no need to show the head of transposed files, your results are simply long list of vector names, it is meaningless to see these. A better way is to use `as.tibble` function to tranform the dataframe into a tibble, a nicely formated table will show up if you just run the name of your dataframe. An example is showing below:
+```{r example}
+maize_t <- as.tibble(maize_t)
+maize_t
+```
+
+Again, it is not helpful to inspect files that will give you long list of results, or requires large amount of memory and space. I did not fully inspect your code before I run the entire script, my computer frozen several times and there are still codes couldn't get through after one hour. Be careful using view(), head(), and tail() when insepcting large files. There are other ways, such as view as a tibble as I mentioned above, or simply use Unix commends. In this way, you can also aviod using `Sys.setenv('R_MAX_VSIZE'=100000000000)`. This homework really isn't that large to be frozen or requires memory function like this.
+
+# pull out each chromosome
+What you did is ok, but there is a easlier way which is using loops.Also, we shoule save the files in to harddrive, not just save them in memories. You may do something like this:
+```{r example}
+for (i in 1:10){
+  filename <- paste("../Output/", "Maize_inc_chr", i, ".txt", sep = "")
+  write_tsv(filter(SNP_tMaize_sorted, Chromosome == i), filename, col_names = T)
+}
+# here I saved my output files in a subdirectory named "Output", I used files that has been sorted already. 
+```
+
+I got this warning message: "NAs introduced by coercionNAs introduced by coercionNAs introduced by coercionNAs introduced". This is because non-numeric character is present in chromosome. So try to filter out the "multiple" chromosome and position first before converting to numeric values.
+
+## plots
+1. Try to save plots with different names, otherwise only you last plot can be save as "myplot".
+2. Try to make chromosme as numeric, as for now the chromosome 10 is showing after chromosome 1.
+3. I think we should process the orginal files for these plots, because we want the SNP distribution for all the groups.
+4. Which group contributed more should also be considered for each chromosome.
+5. There is a confusion on what Dr.Lavrov means on 'SNPs'. Whether he means all the 985 SNP positions, all the SNPs that are variable among each group -- in this case we should remove all those monoallelic SNPs. In his explaination on Slack, he said "each SNP position: variation within group vs. variation among groups", so I assumed he meant that we should pull out all the variable SNPs first, and then plot them. In the first part of the first question, he said to 'Plot the total number of SNPs in our dataset on each chromosome', if we are using the definition of variable SNPs, then the total 985 SNPs are only representing SNP positions. So plotting "total number of SNPs" should be all the variable SNPs in all the individuals in all the groups. It is not just the total number of "SNP positions". I found there should be in total ~1800 SNPs on chr1, ~1500 SNPs on chr2, etc (counting all samples). The second part is to view which group contribute to SNPs most on each chromosome (because it is connected with the first part, so on each chromosome should be considered). You have a plot on all the chromosomes seperated by gourps, I would suggest to add different chromosomes as well. 
+If it is useful to you, I have attached my script for pulling out the variable SNPs, reshape the data, and ploting here:
+```{r my script for Part II question 1}
+# Load in data, reduce unnecessary columns
+Geno <- read_tsv("../Data/fang_et_al_genotypes.txt", col_names = T )
+SNP <- read_tsv("../Data/snp_position.txt")
+Geno2 <- Geno [,-2] # to remove col 2 - unnecessary information
+Geno2
+RedSNP <- SNP[c(1,3,4)]
+# To have all the samples in the same column, so all the samples can be counted in plotting
+Geno2_melt <- melt(Geno2, id = c("Sample_ID", "Group"))
+colnames(Geno2_melt)[3] <- "SNP_ID"
+colnames(Geno2_melt)[4] <- "SNP_call"
+head(Geno2_melt)
+# To merge the SNP information (Chromosme, Position) with al the samples
+Geno2_melt_SNPinfo <- merge(Geno2_melt,RedSNP, by = "SNP_ID")
+# remove muliple and unknown SNPs
+Geno2_melt_SNPinfo <- filter(Geno2_melt_SNPinfo, Chromosome != 'multiple', Chromosome != 'unknown', Position != 'multiple')
+# make chromosome as integar instead of character and sort
+Geno2_melt_SNPinfo$Chromosome = as.integer(Geno2_melt_SNPinfo$Chromosome)
+Geno2_melt_SNPinfo <- arrange(Geno2_melt_SNPinfo, Chromosome)
+head(Geno2_melt_SNPinfo)
+# To show all the types of genotype(SNP_call) on each SNP position, and count how many samples are in for each genotype
+Group_SNP_counts <- Geno2_melt_SNPinfo %>%
+  group_by (Group, SNP_ID, SNP_call, Chromosome) %>%
+  summarise (row_counts = n()) 
+head(Group_SNP_counts, n=12L)
+# To show the counts of types of genotypes
+Group_variableSNP <- Group_SNP_counts %>%
+  group_by (Group, SNP_ID, Chromosome) %>%
+  summarise(SNP_call_types = n())
+head(Group_variableSNP)
+# To extract the SNPs that have more than 1 genotypes in SNP_call, and these SNPs are what we needed as SNPs
+VariableSNPs <- filter(Group_variableSNP, SNP_call_types>1)
+head(VariableSNPs, n=12L)
+SNPbyChr <- VariableSNPs %>%
+  group_by (Chromosome, Group) %>%
+  summarise(SNPcounts =n())
+# To count how many SNPs are variable in each group on each chromosome
+SNPbyChr <- arrange(SNPbyChr, Chromosome, desc(SNPcounts))
+SNPbyChr
+# To adds up all the SNPs from all indivisuals from all Groups based on choromosomes
+SNPbyChr2 <- VariableSNPs %>%
+  group_by(Chromosome) %>%
+  summarise(SNPcountsAllGroup=n())
+SNPbyChr2
+# To plot with all the SNPs in each chromosome, including all the groups
+ggplot(data = SNPbyChr2) + geom_col (mapping=aes(x=Chromosome, y=SNPcountsAllGroup)) + scale_x_continuous(breaks = c(1:10))
+# To plot the number of SNPs from each group in each chromosome. Each group is color coded differently.
+ggplot(data = SNPbyChr) + geom_point (mapping=aes(x=Chromosome, y=SNPcounts, color= Group),size=4,alpha=0.7) + scale_x_continuous(breaks = c(1:10))
+```
+
+You don't have to change your script since he didn't explain it very well what SNPs really means. But I would suggest you to do the SNP counts for all the groups on different chromosomes.
+
+
+#create a new column to show homozygotes and heterozygotes with missing value NA
+In this part, it seems that you only considered C/C, G/G as homozygous, and C/G, G/C as heterzygous. What about A/A, T/T, and other heterozygous format?
+```{r}
+fang_part$type[fang_part$abph1.20 == "?/?"] <- NA
+fang_part$type[fang_part$abph1.20 == "C/C"] <- "Hom"
+fang_part$type[fang_part$abph1.20 == "G/G"] <- "Hom"
+fang_part$type[fang_part$abph1.20 == "C/G"] <- "Het"
+fang_part$type[fang_part$abph1.20 == "G/C"] <- "Het"
+```
+
+#use geom_bar to address the homzygosity and heterozygosity distribution across the groups,only used the SNP location abph1.20
+I think we are suppose to use all the SNPs based on Dr.Lavrov's slack comments. But I agree it was unclear what he meant in the assignment guideline. 
+Also, are the bars should be normalized to equal heights. If you donot use y value, geom_bar should calculate the number of each type, and automatically generate counts for each type. If you use `position = "fill"`, they should be normalized.
+There should be two plots for this part, one for all the samples, the other for all the group. I saw the group one, but all the samples are missing.
+
+If you need help with scripts for reference, my github is https://github.com/mumu3489/R_Assignment.
+
