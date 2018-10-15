@@ -1,0 +1,22 @@
+---
+title: "Cortes_review"
+author: "Ben Cortes"
+date: "October 14, 2018"
+output: html_document
+---
+
+There are some things you should look over and review in your code.
+  
+  The way you inspected the files runs very slowly, at least on my computer. Viewing the files repeatedly froze RStudio to the point that I couldn't completely run the project.
+  
+  The transpose function doesn't work well for files that have headers.
+  
+  There was a fatal error on line 169 that said "Error: Column 1577 must be named."
+  
+  Hard-coding each chromosome filter, arrangement, and character replacement is not ideal. A for-loop would have been better instead.
+  
+  There should be two individual files for each chromosome, one in ascending order of position the other in descending order. 
+  
+  You saved all your graphs to the same filename, overwriting all but the last one.
+  
+  
